@@ -1,0 +1,35 @@
+# IDE files
+*.iml
+.idea/
+
+# Local properties
+local.properties
+
+# Gradle files
+.gradle/
+/build/
+
+# Generated files
+/generated/
+
+# Keystore files
+*.jks
+*.keystore
+
+# Android Studio profiling files
+*.hprof
+*.snapshot
+*.lock
+*.log
+
+# Captures
+/captures/
+
+# External native build files
+.externalNativeBuild/
+.cxx/
+
+# Other common files to ignore
+.DS_Store
+.AppleDouble
+.LSOverride
