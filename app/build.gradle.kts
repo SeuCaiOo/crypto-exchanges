@@ -65,6 +65,10 @@ dependencies {
     implementation(libs.retrofit.serialization.converter)
     implementation(libs.logging.interceptor)
 
+    // Coil
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+
     // Core Unit Test
     testImplementation(libs.junit)
 
