@@ -56,6 +56,11 @@ dependencies {
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.serialization.converter)
+    implementation(libs.logging.interceptor)
+
     // Core Unit Test
     testImplementation(libs.junit)
 
