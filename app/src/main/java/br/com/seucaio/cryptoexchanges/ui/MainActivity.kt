@@ -1,4 +1,4 @@
-package br.com.seucaio.cryptoexchanges
+package br.com.seucaio.cryptoexchanges.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
