@@ -2,6 +2,7 @@ package br.com.seucaio.cryptoexchanges.ui.screen.details
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.seucaio.cryptoexchanges.domain.model.Exchange
+import br.com.seucaio.cryptoexchanges.core.extension.orFalse
 import br.com.seucaio.cryptoexchanges.ui.CryptoExchangeSurface
 import br.com.seucaio.cryptoexchanges.ui.component.MyError
 import br.com.seucaio.cryptoexchanges.ui.component.MyLoading
@@ -95,57 +96,129 @@ private fun ExchangeDetailsContent(
             .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Logo
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(detailsData.logoUrl)
-                .crossfade(true)
-//                .placeholder(R.drawable.img_logo_placeholder) // Crie este drawable placeholder
-//                .error(R.drawable.img_logo_placeholder) // Ou um drawable de erro específico
-                .build(),
-            contentDescription = "${detailsData.exchangeName} Logo",
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentScale = ContentScale.Crop // Ou ContentScale.Fit se a imagem não for naturalmente circular
+        SectionHead(detailsData = detailsData, modifier = modifier)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        SectionItem(
+            title = "Volumes",
+            items = detailsData.volumeDetails.map { (item1, _) -> item1.label to item1.value },
+            modifier = modifier
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        SectionItem(
+            title = "Information",
+            items = detailsData.informationDetails.map { (item1, _) -> item1.label to item1.value },
+            modifier = modifier
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
 
-        // Nome da Exchange
-        Text(
-            text = detailsData.exchangeName,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center
-        )
+@Composable
+private fun SectionHead(
+    detailsData: ExchangeDetailsData,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = MaterialTheme.shapes.medium
+            )
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        with(detailsData) {
+            if (logoUrl?.isNotBlank().orFalse()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(detailsData.logoUrl)
+                        .crossfade(true)
+                        //                .placeholder(R.drawable.img_logo_placeholder) // Crie este drawable placeholder
+                        //                .error(R.drawable.img_logo_placeholder) // Ou um drawable de erro específico
+                        .build(),
+                    contentDescription = "${detailsData.exchangeName} Logo",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentScale = ContentScale.Crop // Ou ContentScale.Fit se a imagem não for naturalmente circular
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
-        Spacer(modifier = Modifier.height(4.dp))
+            if (exchangeName.orEmpty().isNotBlank()) {
+                Text(
+                    text = detailsData.exchangeName.orEmpty(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
 
-        // ID da Exchange
-        Text(
-            text = detailsData.exchangeIdLabel,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant, // Cor mais suave
-            textAlign = TextAlign.Center
-        )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Seção de Volumes
-        SectionBlock(title = "Volumes", details = detailsData.volumeDetails)
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Seção de Informações
-        SectionBlock(title = "Information", details = detailsData.informationDetails)
-
-        Spacer(modifier = Modifier.height(16.dp)) // Espaço no final
+            if (exchangeIdLabel.orEmpty().isNotBlank()) {
+                Text(
+                    text = detailsData.exchangeIdLabel.orEmpty(),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 
 // --- Componentes Reutilizáveis ---
+
+
+@Composable
+private fun SectionItem(
+    title: String, items: List<Pair<String, String?>>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = MaterialTheme.shapes.medium
+            )
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        items.filterNot { it.second.isNullOrBlank() }.forEach { item ->
+            Row(modifier = Modifier) {
+                Text(
+                    text = item.first,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = item.second.orEmpty(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
 private fun SectionBlock(
@@ -153,7 +226,16 @@ private fun SectionBlock(
     details: List<DetailRowData>,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = MaterialTheme.shapes.medium
+            )
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
@@ -198,12 +280,12 @@ private fun DetailInfoItem(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = item.label,
+            text = item.label.orEmpty(),
             style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = item.value,
+            text = item.value.orEmpty(),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold,
         )
