@@ -30,14 +30,14 @@ data class ExchangeResponse(
     @SerialName("data_symbols_count")
     val dataSymbolsCount: Long? = null,
     @SerialName("volume_1hrs_usd")
-    val volume1HrsUsd: Double,
+    val volume1HrsUsd: Double? = null,
     @SerialName("volume_1day_usd")
-    val volume1DayUsd: Double,
+    val volume1DayUsd: Double? = null,
     @SerialName("volume_1mth_usd")
-    val volume1MthUsd: Double,
+    val volume1MthUsd: Double? = null,
     @SerialName("metric_id")
     val metricId: List<String>? = null,
-    val rank: Int,
+    val rank: Int? = null,
     val icons: List<IconResponse>? = null,
     @SerialName("integration_status")
     val integrationStatus: String? = null

@@ -14,11 +14,11 @@ data class Exchange(
     val dataTradeEnd: String? = null,
     val dataTradeCount: Long? = null,
     val dataSymbolsCount: Long? = null,
-    val volume1HrsUsd: Double,
-    val volume1DayUsd: Double,
-    val volume1MthUsd: Double,
+    val volume1HrsUsd: Double? = null,
+    val volume1DayUsd: Double? = null,
+    val volume1MthUsd: Double? = null,
     val metricId: List<String>? = null,
-    val rank: Int,
+    val rank: Int? = null,
     val icons: List<Icon>? = null,
     val integrationStatus: String? = null
 ) {
