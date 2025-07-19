@@ -5,9 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -23,6 +25,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent { CryptoExchangeApp() }
+    }
+}
+
+@Composable
+fun CryptoExchangeSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    CryptoExchangesTheme {
+        Surface(modifier = modifier) {
+            content()
+        }
     }
 }
 
@@ -43,10 +54,14 @@ fun CryptoExchangeApp() {
                 )
             },
         ) { innerPadding ->
-            AppNavGraph(
-                navController = navController,
-                modifier = Modifier.padding(paddingValues = innerPadding).fillMaxSize()
-            )
+            Surface {
+                AppNavGraph(
+                    navController = navController,
+                    modifier = Modifier
+                        .padding(paddingValues = innerPadding)
+                        .fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -55,5 +70,5 @@ fun CryptoExchangeApp() {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CryptoExchangeAppPreview() {
-        CryptoExchangeApp()
+    CryptoExchangeApp()
 }

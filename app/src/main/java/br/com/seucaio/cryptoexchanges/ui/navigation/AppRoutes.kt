@@ -3,9 +3,11 @@ package br.com.seucaio.cryptoexchanges.ui.navigation
 import kotlinx.serialization.Serializable
 
 object AppRoutes {
+    // TODO Remover no final;
     @Serializable
     data object Home
 
+    // TODO Remover no final;
     @Serializable
     data class Error(
         val title: String? = null,
@@ -13,8 +15,11 @@ object AppRoutes {
     )
 
     @Serializable
+    data object ExchangeFlow
+
+    @Serializable
     data object ExchangeList
 
     @Serializable
-    data class ExchangeDetails(val exchangeId: String)
+    data object ExchangeDetails
 }

@@ -44,7 +44,7 @@ fun MyTopAppBar(
                 Icon(Icons.Filled.Warning, "Simulate Error")
             }
             IconButton(onClick = {
-                navController.navigate(AppRoutes.ExchangeDetails(""))
+                navController.navigate(AppRoutes.ExchangeDetails)
             }) {
                 Icon(Icons.Filled.Info, "Simulate Detalhes")
             }
