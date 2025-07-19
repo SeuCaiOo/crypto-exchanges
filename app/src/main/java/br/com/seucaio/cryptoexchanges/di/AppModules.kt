@@ -5,7 +5,7 @@ import br.com.seucaio.cryptoexchanges.data.service.ApiService
 import br.com.seucaio.cryptoexchanges.data.source.ExchangeDataSource
 import br.com.seucaio.cryptoexchanges.domain.repository.ExchangeRepository
 import br.com.seucaio.cryptoexchanges.domain.usecase.GetExchangesUseCase
-import br.com.seucaio.cryptoexchanges.ui.screen.list.ExchangeListViewModel
+import br.com.seucaio.cryptoexchanges.ui.screen.ExchangeViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -31,8 +31,8 @@ val useCaseModule = module {
 }
 
 val viewModelModule = module {
-    viewModel<ExchangeListViewModel> {
-        ExchangeListViewModel(getExchangesUseCase = get<GetExchangesUseCase>())
+    viewModel<ExchangeViewModel> {
+        ExchangeViewModel(getExchangesUseCase = get<GetExchangesUseCase>())
     }
 }
 
