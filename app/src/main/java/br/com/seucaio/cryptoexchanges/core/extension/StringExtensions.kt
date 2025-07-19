@@ -1,7 +1,5 @@
 package br.com.seucaio.cryptoexchanges.core.extension
 
-import br.com.seucaio.cryptoexchanges.core.EMPTY_STRING
+val String.Companion.EMPTY get() = ""
 
 fun String?.orDefault(default: String) = this ?: default
-
-fun String?.orEmpty() = this ?: EMPTY_STRING

@@ -1,7 +1,7 @@
 package br.com.seucaio.cryptoexchanges.core.utils
 
 import android.icu.text.NumberFormat
-import br.com.seucaio.cryptoexchanges.core.ZERO_DOUBLE
+import br.com.seucaio.cryptoexchanges.core.extension.ZERO
 import java.util.Locale
 import kotlin.math.abs
 
@@ -24,7 +24,7 @@ fun Double.asAbbreviationValue(): String = toFormattedString(valueToFormat = thi
 
 fun toFormattedString(valueToFormat: Double, fullValue: Boolean = false): String {
     if (valueToFormat.isNaN() || valueToFormat.isInfinite()) {
-        return BASE_USD_FORMATTER.format(ZERO_DOUBLE)
+        return BASE_USD_FORMATTER.format(Double.ZERO)
     }
 
     if (!fullValue) {
