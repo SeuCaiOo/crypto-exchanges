@@ -69,6 +69,11 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
 
