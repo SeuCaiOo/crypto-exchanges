@@ -14,8 +14,12 @@ import retrofit2.Retrofit
 
 val networkModule = module {
     single<HttpLoggingInterceptor> { NetworkProvider.loggingInterceptor() }
+    single<NetworkProvider.ApiKeyInterceptor> { NetworkProvider.apiKeyInterceptor() }
     single<OkHttpClient> {
-        NetworkProvider.okHttpClient(interceptors = listOf(get<HttpLoggingInterceptor>()))
+        NetworkProvider.okHttpClient(interceptors = listOf(
+            get<HttpLoggingInterceptor>(),
+            get<NetworkProvider.ApiKeyInterceptor>()
+        ))
     }
     single<Retrofit> { NetworkProvider.providesRetrofit(okHttpClient = get<OkHttpClient>()) }
     single<ApiService> { get<Retrofit>().create(ApiService::class.java) }
