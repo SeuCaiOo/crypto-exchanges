@@ -1,5 +1,7 @@
 package br.com.seucaio.cryptoexchanges.ui.model
 
+import br.com.seucaio.cryptoexchanges.core.extension.orZero
+import br.com.seucaio.cryptoexchanges.core.utils.asAbbreviationValue
 import br.com.seucaio.cryptoexchanges.domain.model.Exchange
 
 data class ExchangeItemData(
@@ -10,7 +12,7 @@ data class ExchangeItemData(
     constructor(exchange: Exchange) : this(
         uniqueId = exchange.exchangeId.orEmpty(),
         name = exchange.name.orEmpty(),
-        volumeLabel = "$${exchange.volume1DayUsd}"
+        volumeLabel = exchange.volume1DayUsd.orZero().asAbbreviationValue()
     )
 
     companion object {
