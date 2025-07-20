@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class ExchangeDataSource(
+class ExchangeRemoteDataSource(
     private val apiService: ApiService,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
