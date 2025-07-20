@@ -1,8 +1,11 @@
 package br.com.seucaio.cryptoexchanges.di
 
+import br.com.seucaio.cryptoexchanges.data.local.dao.ExchangeDao
+import br.com.seucaio.cryptoexchanges.data.local.database.MyAppDatabase
 import br.com.seucaio.cryptoexchanges.data.repository.ExchangeRepositoryImpl
 import br.com.seucaio.cryptoexchanges.data.service.ApiService
-import br.com.seucaio.cryptoexchanges.data.source.ExchangeDataSource
+import br.com.seucaio.cryptoexchanges.data.source.ExchangeLocalDataSource
+import br.com.seucaio.cryptoexchanges.data.source.ExchangeRemoteDataSource
 import br.com.seucaio.cryptoexchanges.domain.repository.ExchangeRepository
 import br.com.seucaio.cryptoexchanges.domain.usecase.GetExchangesUseCase
 import br.com.seucaio.cryptoexchanges.ui.screen.ExchangeViewModel
@@ -12,7 +15,13 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
-val networkModule = module {
+val localModule = module {
+    single<MyAppDatabase> { MyAppDatabase.getDatabase(context = get()) }
+    single<ExchangeDao> { get<MyAppDatabase>().exchangeDao() }
+    single<ExchangeLocalDataSource> { ExchangeLocalDataSource(exchangeDao = get<ExchangeDao>()) }
+}
+
+val remoteModule = module {
     single<HttpLoggingInterceptor> { NetworkProvider.loggingInterceptor() }
     single<NetworkProvider.ApiKeyInterceptor> { NetworkProvider.apiKeyInterceptor() }
     single<OkHttpClient> {
@@ -26,8 +35,11 @@ val networkModule = module {
 }
 
 val dataModule = module {
-    single<ExchangeDataSource> { ExchangeDataSource(apiService = get<ApiService>()) }
-    single<ExchangeRepository> { ExchangeRepositoryImpl(dataSource = get<ExchangeDataSource>()) }
+    single<ExchangeRemoteDataSource> { ExchangeRemoteDataSource(apiService = get<ApiService>()) }
+    single<ExchangeRepository> { ExchangeRepositoryImpl(
+        localDataSource = get<ExchangeLocalDataSource>(),
+        remoteDataSource = get<ExchangeRemoteDataSource>()
+    ) }
 }
 
 val useCaseModule = module {
@@ -40,4 +52,4 @@ val viewModelModule = module {
     }
 }
 
-val appModules = listOf(networkModule, dataModule, useCaseModule, viewModelModule)
+val appModules = listOf(localModule, remoteModule, dataModule, useCaseModule, viewModelModule)
