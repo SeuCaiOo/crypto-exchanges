@@ -1,10 +1,10 @@
 package br.com.seucaio.cryptoexchanges.data.mapper
 
-import br.com.seucaio.cryptoexchanges.core.mapper.Mapper
+import br.com.seucaio.cryptoexchanges.core.mapper.MapperResponse
 import br.com.seucaio.cryptoexchanges.data.model.ExchangeResponse
 import br.com.seucaio.cryptoexchanges.domain.model.Exchange
 
-object ExchangeMapper : Mapper<ExchangeResponse, Exchange> {
+object ExchangeResponseMapper : MapperResponse<ExchangeResponse, Exchange> {
     override fun map(source: ExchangeResponse): Exchange {
         return Exchange(
             exchangeId = source.exchangeId,
