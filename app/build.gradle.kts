@@ -93,6 +93,13 @@ dependencies {
     // Timber
     implementation(libs.timber)
 
+    // Chucker
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
+
+    // LeakCanary
+    debugImplementation(libs.leakcanary)
+
     // Core Unit Test
     testImplementation(libs.junit)
 

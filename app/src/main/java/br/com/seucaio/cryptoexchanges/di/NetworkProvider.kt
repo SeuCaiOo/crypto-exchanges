@@ -1,7 +1,11 @@
 package br.com.seucaio.cryptoexchanges.di
 
+import android.content.Context
 import br.com.seucaio.cryptoexchanges.BuildConfig
 import br.com.seucaio.cryptoexchanges.data.service.ApiService
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -66,6 +70,24 @@ object NetworkProvider {
     }
 
     fun apiKeyInterceptor(): ApiKeyInterceptor = ApiKeyInterceptor()
+
+
+    fun chuckerInterceptor(context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor.Builder(context)
+            .collector(chuckerCollector(context))
+            .maxContentLength(250_000L)
+            .redactHeaders(emptySet())
+            .alwaysReadResponseBody(false)
+            .build()
+    }
+
+    private fun chuckerCollector(context: Context): ChuckerCollector {
+        return ChuckerCollector(
+            context = context,
+            showNotification = true,
+            retentionPeriod = RetentionManager.Period.ONE_HOUR
+        )
+    }
 
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()

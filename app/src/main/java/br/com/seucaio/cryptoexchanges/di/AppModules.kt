@@ -9,6 +9,7 @@ import br.com.seucaio.cryptoexchanges.data.source.ExchangeRemoteDataSource
 import br.com.seucaio.cryptoexchanges.domain.repository.ExchangeRepository
 import br.com.seucaio.cryptoexchanges.domain.usecase.GetExchangesUseCase
 import br.com.seucaio.cryptoexchanges.ui.screen.ExchangeViewModel
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -24,10 +25,12 @@ val localModule = module {
 val remoteModule = module {
     single<HttpLoggingInterceptor> { NetworkProvider.loggingInterceptor() }
     single<NetworkProvider.ApiKeyInterceptor> { NetworkProvider.apiKeyInterceptor() }
+    single<ChuckerInterceptor> { NetworkProvider.chuckerInterceptor(context = get()) }
     single<OkHttpClient> {
         NetworkProvider.okHttpClient(interceptors = listOf(
             get<HttpLoggingInterceptor>(),
-            get<NetworkProvider.ApiKeyInterceptor>()
+            get<NetworkProvider.ApiKeyInterceptor>(),
+            get<ChuckerInterceptor>()
         ))
     }
     single<Retrofit> { NetworkProvider.providesRetrofit(okHttpClient = get<OkHttpClient>()) }

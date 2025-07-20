@@ -18,6 +18,8 @@ serializationConverter = "0.8.0"
 loggingInterceptor = "4.11.0"
 coil = "2.6.0"
 timber = "5.0.1"
+chucker = "4.0.0"
+leakcanary = "2.12"
 
 [libraries]
 # Core
@@ -58,6 +60,13 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 # Timber
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+# Chucker
+chucker = { module = "com.github.chuckerteam.chucker:library", version.ref = "chucker" }
+chucker-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "chucker" }
+
+# Leakcanary
+leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
