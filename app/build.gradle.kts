@@ -90,6 +90,9 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
 
+    // Timber
+    implementation(libs.timber)
+
     // Core Unit Test
     testImplementation(libs.junit)
 

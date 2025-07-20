@@ -17,6 +17,7 @@ retrofit = "2.9.0"
 serializationConverter = "0.8.0"
 loggingInterceptor = "4.11.0"
 coil = "2.6.0"
+timber = "5.0.1"
 
 [libraries]
 # Core
@@ -54,6 +55,9 @@ logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", ver
 # Coil
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+# Timber
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
