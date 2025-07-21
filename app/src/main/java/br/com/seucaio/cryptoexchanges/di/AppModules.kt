@@ -4,9 +4,11 @@ import br.com.seucaio.cryptoexchanges.core.utils.network.ConnectivityChecker
 import br.com.seucaio.cryptoexchanges.data.local.dao.ExchangeDao
 import br.com.seucaio.cryptoexchanges.data.local.database.MyAppDatabase
 import br.com.seucaio.cryptoexchanges.data.repository.ExchangeRepositoryImpl
-import br.com.seucaio.cryptoexchanges.data.service.ApiService
-import br.com.seucaio.cryptoexchanges.data.source.ExchangeLocalDataSource
-import br.com.seucaio.cryptoexchanges.data.source.ExchangeRemoteDataSource
+import br.com.seucaio.cryptoexchanges.data.remote.service.ApiService
+import br.com.seucaio.cryptoexchanges.data.local.source.ExchangeLocalDataSource
+import br.com.seucaio.cryptoexchanges.data.remote.service.RetrofitConfig
+import br.com.seucaio.cryptoexchanges.data.remote.service.interceptor.NetworkInterceptor
+import br.com.seucaio.cryptoexchanges.data.remote.source.ExchangeRemoteDataSource
 import br.com.seucaio.cryptoexchanges.domain.repository.ExchangeRepository
 import br.com.seucaio.cryptoexchanges.domain.usecase.GetExchangesUseCase
 import br.com.seucaio.cryptoexchanges.ui.screen.ExchangeViewModel
@@ -26,19 +28,19 @@ val localModule = module {
 
 val remoteModule = module {
     single { ConnectivityChecker(androidApplication()) }
-    single<HttpLoggingInterceptor> { NetworkProvider.loggingInterceptor() }
-    single<NetworkProvider.ApiKeyInterceptor> { NetworkProvider.apiKeyInterceptor() }
-    single<ChuckerInterceptor> { NetworkProvider.chuckerInterceptor(context = get()) }
+    single<HttpLoggingInterceptor> { NetworkInterceptor.loggingInterceptor() }
+    single<NetworkInterceptor.ApiKeyInterceptor> { NetworkInterceptor.apiKeyInterceptor() }
+    single<ChuckerInterceptor> { NetworkInterceptor.chuckerInterceptor(context = get()) }
     single<OkHttpClient> {
-        NetworkProvider.okHttpClient(
+        RetrofitConfig.okHttpClient(
             interceptors = listOf(
                 get<HttpLoggingInterceptor>(),
-                get<NetworkProvider.ApiKeyInterceptor>(),
+                get<NetworkInterceptor.ApiKeyInterceptor>(),
                 get<ChuckerInterceptor>()
             )
         )
     }
-    single<Retrofit> { NetworkProvider.providesRetrofit(okHttpClient = get<OkHttpClient>()) }
+    single<Retrofit> { RetrofitConfig.providesRetrofit(okHttpClient = get<OkHttpClient>()) }
     single<ApiService> { get<Retrofit>().create(ApiService::class.java) }
 }
 

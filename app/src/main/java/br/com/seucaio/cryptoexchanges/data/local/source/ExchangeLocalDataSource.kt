@@ -1,4 +1,4 @@
-package br.com.seucaio.cryptoexchanges.data.source
+package br.com.seucaio.cryptoexchanges.data.local.source
 
 import br.com.seucaio.cryptoexchanges.data.local.dao.ExchangeDao
 import br.com.seucaio.cryptoexchanges.data.local.entity.ExchangeEntity

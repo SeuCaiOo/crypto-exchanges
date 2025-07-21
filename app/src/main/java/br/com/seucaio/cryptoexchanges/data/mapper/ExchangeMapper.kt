@@ -2,7 +2,7 @@ package br.com.seucaio.cryptoexchanges.data.mapper
 
 import br.com.seucaio.cryptoexchanges.core.mapper.Mapper
 import br.com.seucaio.cryptoexchanges.data.local.entity.ExchangeEntity
-import br.com.seucaio.cryptoexchanges.data.model.ExchangeResponse
+import br.com.seucaio.cryptoexchanges.data.remote.dto.ExchangeResponse
 import br.com.seucaio.cryptoexchanges.domain.model.Exchange
 
 object ExchangeMapper : Mapper<ExchangeResponse, ExchangeEntity, Exchange> {
