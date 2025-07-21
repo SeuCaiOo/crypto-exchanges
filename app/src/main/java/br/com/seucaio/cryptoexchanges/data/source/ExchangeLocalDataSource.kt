@@ -5,8 +5,6 @@ import br.com.seucaio.cryptoexchanges.data.local.entity.ExchangeEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 class ExchangeLocalDataSource(
@@ -15,19 +13,15 @@ class ExchangeLocalDataSource(
 ) {
     fun getAllExchanges(): Flow<List<ExchangeEntity>> {
         return exchangeDao.getAllExchanges()
-            .catch { throw it }
-            .flowOn(ioDispatcher)
     }
 
-    suspend fun insertAllExchanges(exchanges: List<ExchangeEntity>)  {
-        withContext(ioDispatcher) { exchangeDao.insertAllExchanges(exchanges) }
-    }
-
-    suspend fun deleteAllExchanges() {
-        withContext(ioDispatcher) { exchangeDao.deleteAllExchanges() }
-    }
+    suspend fun clearAndCacheExchanges(exchanges: List<ExchangeEntity>) =
+        withContext(ioDispatcher) {
+            exchangeDao.deleteAllExchanges()
+            exchangeDao.insertAllExchanges(exchanges)
+        }
 
     suspend fun getOldestUpdateTimestamp(): Long? {
-        return exchangeDao.getOldestUpdateTimestamp()
+        return withContext(ioDispatcher) { exchangeDao.getOldestUpdateTimestamp() }
     }
 }
