@@ -23,6 +23,7 @@ leakcanary = "2.12"
 mockk = "1.13.10"
 coroutinesTest = "1.8.1"
 detekt = "1.23.8"
+jacoco = "0.8.12"
 
 [libraries]
 # Core
@@ -82,3 +83,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-parcelize = { id = "kotlin-parcelize" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+jacoco = { id = "jacoco" }

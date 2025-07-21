@@ -9,10 +9,16 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.jacoco)
+}
+
+jacoco {
+    toolVersion = "0.8.12"
 }
 
 apply {
     from("../config/detekt/detekt.gradle")
+    from("../config/jacoco/jacoco.gradle.kts")
 }
 
 val localProperties = Properties()
@@ -48,8 +54,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            enableUnitTestCoverage = false
+            enableAndroidTestCoverage = false
         }
     }
+
+    testCoverage.jacocoVersion = "0.8.12"
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
