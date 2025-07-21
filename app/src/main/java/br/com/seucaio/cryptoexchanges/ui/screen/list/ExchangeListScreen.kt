@@ -3,9 +3,11 @@ package br.com.seucaio.cryptoexchanges.ui.screen.list
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,11 +15,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,10 +50,8 @@ fun ExchangeListScreen(
     viewModel: ExchangeViewModel = koinViewModel(),
 ) {
     val uiState: ExchangeUiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.getExchanges()
-    }
+    val pullToRefreshState = rememberPullToRefreshState()
+    val snackBarHostState = remember { viewModel.snackBarHostState }
 
     LaunchedEffect(Unit) {
         viewModel.uiAction.collect { action ->
@@ -56,39 +61,61 @@ fun ExchangeListScreen(
         }
     }
 
-    ExchangeListContent(
-        uiState = uiState,
-        onRetryClicked = { viewModel.getExchanges() },
-        onNavigateToDetails = viewModel::onItemClicked,
-        modifier = modifier
-    )
+    Box(
+        modifier = modifier.fillMaxSize(),
+    ) {
+        ExchangeListContent(
+            uiState = uiState,
+            onRetryClicked = { viewModel.getExchanges() },
+            onNavigateToDetails = viewModel::onItemClicked,
+            modifier = Modifier.fillMaxSize(),
+            pullToRefreshState = pullToRefreshState,
+            onRefresh = { viewModel.onRefreshExchanges() }
+        )
+        SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+        )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExchangeListContent(
     uiState: ExchangeUiState,
     onRetryClicked: () -> Unit,
     onNavigateToDetails: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    pullToRefreshState: PullToRefreshState,
+    onRefresh: () -> Unit
 ) {
-    uiState.ExchangeStateRenderer(
-        loadingContent = { MyLoading(modifier = modifier) },
-        errorContent = {
-            MyError(
-                modifier = modifier,
-                title = "Oops! Algo deu errado.",
-                errorMessage = uiState.error.orEmpty(),
-                onRetry = onRetryClicked
-            )
-        },
-        successContent = {
-            ExchangeListSuccess(
-                uiState = uiState,
-                onNavigateToDetails = onNavigateToDetails,
-                modifier = modifier
-            )
-        }
-    )
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = onRefresh,
+        state = pullToRefreshState,
+        modifier = modifier
+    ) {
+        uiState.ExchangeStateRenderer(
+            loadingContent = { MyLoading(modifier = modifier) },
+            errorContent = {
+                MyError(
+                    modifier = modifier,
+                    title = "Oops! Algo deu errado.",
+                    errorMessage = uiState.error ?: uiState.message.orEmpty(),
+                    onRetry = onRetryClicked
+                )
+            },
+            successContent = {
+                ExchangeListSuccess(
+                    uiState = uiState,
+                    onNavigateToDetails = onNavigateToDetails,
+                    modifier = modifier
+                )
+            }
+        )
+    }
 }
 
 @Composable
@@ -153,45 +180,57 @@ fun ExchangeListItem(
 // --- Previews ---
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewExchangeListContentLoading() {
     CryptoExchangeSurface {
         val sampleUiState = ExchangeUiState(isLoading = true)
+        val pullToRefreshState = rememberPullToRefreshState()
         ExchangeListContent(
             uiState = sampleUiState,
             onRetryClicked = {},
-            onNavigateToDetails = {}
+            onNavigateToDetails = {},
+            pullToRefreshState = pullToRefreshState,
+            onRefresh = {}
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewExchangeListContentError() {
     CryptoExchangeSurface {
         val sampleUiState = ExchangeUiState(error = "Erro de conexão")
+        val pullToRefreshState = rememberPullToRefreshState()
         ExchangeListContent(
             uiState = sampleUiState,
             onRetryClicked = {},
-            onNavigateToDetails = {}
+            onNavigateToDetails = {},
+            pullToRefreshState = pullToRefreshState,
+            onRefresh = {}
         )
     }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewExchangeListContent() {
     CryptoExchangeSurface {
         val sampleUiState = ExchangeUiState(items = getSampleExchangeData())
+        val pullToRefreshState = rememberPullToRefreshState()
         ExchangeListContent(
             uiState = sampleUiState,
             onRetryClicked = {},
-            onNavigateToDetails = {}
+            onNavigateToDetails = {},
+            pullToRefreshState = pullToRefreshState,
+            onRefresh = {}
         )
     }
 }
