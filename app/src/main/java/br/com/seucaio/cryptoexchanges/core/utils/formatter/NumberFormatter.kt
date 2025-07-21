@@ -1,4 +1,4 @@
-package br.com.seucaio.cryptoexchanges.core.utils
+package br.com.seucaio.cryptoexchanges.core.utils.formatter
 
 import android.icu.text.NumberFormat
 import br.com.seucaio.cryptoexchanges.core.extension.ZERO

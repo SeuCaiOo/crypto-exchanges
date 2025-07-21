@@ -2,8 +2,8 @@ package br.com.seucaio.cryptoexchanges.ui.model
 
 import br.com.seucaio.cryptoexchanges.core.extension.orZero
 import br.com.seucaio.cryptoexchanges.core.extension.toStringSafe
-import br.com.seucaio.cryptoexchanges.core.utils.asFullValue
-import br.com.seucaio.cryptoexchanges.core.utils.toFormattedDateString
+import br.com.seucaio.cryptoexchanges.core.utils.formatter.asFullValue
+import br.com.seucaio.cryptoexchanges.core.utils.formatter.toFormattedDateString
 import br.com.seucaio.cryptoexchanges.domain.model.Exchange
 
 data class ExchangeDetailsData(

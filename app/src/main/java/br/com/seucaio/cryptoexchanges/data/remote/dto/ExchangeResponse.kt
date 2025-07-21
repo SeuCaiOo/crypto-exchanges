@@ -1,4 +1,4 @@
-package br.com.seucaio.cryptoexchanges.data.model
+package br.com.seucaio.cryptoexchanges.data.remote.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

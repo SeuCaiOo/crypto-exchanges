@@ -1,4 +1,4 @@
-package br.com.seucaio.cryptoexchanges.core.utils
+package br.com.seucaio.cryptoexchanges.core.utils.formatter
 
 import java.time.Instant
 import java.time.LocalDateTime

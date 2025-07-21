@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
@@ -6,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 val localProperties = Properties()
@@ -28,7 +30,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "API_KEY", "\"${localProperties.getProperty("API_KEY", "")}\"")
-        buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL", "")}\"")
     }
 
     buildTypes {
@@ -44,8 +45,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+        }
     }
     buildFeatures {
         compose = true
@@ -65,6 +68,11 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
 
@@ -80,6 +88,16 @@ dependencies {
     // Coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
+    // Timber
+    implementation(libs.timber)
+
+    // Chucker
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
+
+    // LeakCanary
+    debugImplementation(libs.leakcanary)
 
     // Core Unit Test
     testImplementation(libs.junit)

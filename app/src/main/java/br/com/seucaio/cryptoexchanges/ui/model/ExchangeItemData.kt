@@ -1,7 +1,7 @@
 package br.com.seucaio.cryptoexchanges.ui.model
 
 import br.com.seucaio.cryptoexchanges.core.extension.orZero
-import br.com.seucaio.cryptoexchanges.core.utils.asAbbreviationValue
+import br.com.seucaio.cryptoexchanges.core.utils.formatter.asAbbreviationValue
 import br.com.seucaio.cryptoexchanges.domain.model.Exchange
 
 data class ExchangeItemData(
