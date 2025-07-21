@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.detekt)
     alias(libs.plugins.jacoco)
+    alias(libs.plugins.kotlinx.kover)
 }
 
 jacoco {
@@ -46,7 +47,7 @@ android {
     buildTypes {
         debug {
             enableUnitTestCoverage = true
-            enableAndroidTestCoverage = false
+            enableAndroidTestCoverage = true
         }
         release {
             isMinifyEnabled = false

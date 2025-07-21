@@ -26,6 +26,7 @@ mockWebServer = "4.12.0"
 truth = "1.1.5"
 detekt = "1.23.8"
 jacoco = "0.8.12"
+kover="0.9.1"
 
 [libraries]
 # Core
@@ -88,3 +89,4 @@ kotlin-parcelize = { id = "kotlin-parcelize" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 jacoco = { id = "jacoco" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
