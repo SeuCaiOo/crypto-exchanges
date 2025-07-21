@@ -8,6 +8,11 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.detekt)
+}
+
+apply {
+    from("../config/detekt/detekt.gradle")
 }
 
 val localProperties = Properties()
@@ -33,6 +38,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = false
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -113,4 +122,7 @@ dependencies {
     // Core Debug Tool
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Detekt Formatting
+    detektPlugins(libs.detekt.formatting)
 }
