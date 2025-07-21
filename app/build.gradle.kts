@@ -123,6 +123,8 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.truth)
 
     // Core Instrumentation Test
     androidTestImplementation(libs.androidx.junit)
