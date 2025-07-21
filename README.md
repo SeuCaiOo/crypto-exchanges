@@ -2,7 +2,8 @@
 
 Este projeto é um aplicativo Android desenvolvido em Kotlin com Jetpack Compose, focado na listagem e visualização de detalhes de corretoras de criptomoedas.
 
-## Estrutura do Projeto
+<details>
+<summary><h2>Estrutura do Projeto</h2></summary>
 
 O projeto segue uma estrutura modular e organizada, com as seguintes pastas principais:
 
@@ -42,8 +43,10 @@ O projeto segue uma estrutura modular e organizada, com as seguintes pastas prin
     -   `src/test/`: Testes unitários.
 -   `gradle/`: Contém arquivos de configuração do Gradle.
     -   `libs.versions.toml`: Gerenciamento centralizado de dependências.
+</details>
 
-## Como Funciona
+<details>
+<summary><h2>Como Funciona</h2></summary>
 
 O aplicativo exibe uma lista de corretoras de criptomoedas. Ao clicar em uma exchange, o usuário é levado a uma tela de detalhes com informações mais aprofundadas.
 
@@ -52,8 +55,10 @@ O aplicativo exibe uma lista de corretoras de criptomoedas. Ao clicar em uma exc
 3.  **Atualização:** O aplicativo verifica a necessidade de atualizar os dados do cache. Se a rede estiver disponível, ele busca os dados mais recentes da API.
 4.  **Tratamento de Erros:** Erros de rede ou API são tratados e exibidos ao usuário, com opções para tentar novamente.
 5.  **Detalhes:** A tela de detalhes exibe informações como volume de negociação, rank, status de integração e datas importantes.
+</details>
 
-## Bibliotecas e Arquitetura
+<details>
+<summary><h2>Bibliotecas e Arquitetura</h2></summary>
 
 O projeto utiliza as seguintes bibliotecas e padrões arquiteturais:
 
@@ -67,6 +72,7 @@ O projeto utiliza as seguintes bibliotecas e padrões arquiteturais:
 -   **LeakCanary:** Biblioteca de detecção de vazamento de memória.
 -   **Arquitetura:** Segue princípios de Clean Architecture, com camadas de **Dados**, **Domínio** e **UI**, promovendo separação de responsabilidades e testabilidade.
 -   **MVVM (Model-View-ViewModel):** Padrão de arquitetura utilizado na camada de UI para separar a lógica de negócios da interface do usuário.
+</details>
 
 ## Screenshots
 
