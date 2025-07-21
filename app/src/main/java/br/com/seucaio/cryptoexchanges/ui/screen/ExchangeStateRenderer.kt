@@ -10,7 +10,7 @@ fun ExchangeUiState.ExchangeStateRenderer(
 ) {
     when {
         isLoading -> loadingContent()
-        error != null -> errorContent()
+        !error.isNullOrEmpty() && !isLoading && exchanges.isEmpty()  -> errorContent()
         else -> successContent()
     }
 }
