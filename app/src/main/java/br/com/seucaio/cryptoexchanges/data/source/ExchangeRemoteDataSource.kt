@@ -1,5 +1,7 @@
 package br.com.seucaio.cryptoexchanges.data.source
 
+import br.com.seucaio.cryptoexchanges.core.utils.network.ConnectivityChecker
+import br.com.seucaio.cryptoexchanges.core.utils.network.executeNetworkRequest
 import br.com.seucaio.cryptoexchanges.data.model.ExchangeResponse
 import br.com.seucaio.cryptoexchanges.data.service.ApiService
 import kotlinx.coroutines.CoroutineDispatcher
@@ -11,10 +13,13 @@ import kotlinx.coroutines.flow.flowOn
 
 class ExchangeRemoteDataSource(
     private val apiService: ApiService,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val connectivityChecker: ConnectivityChecker,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    fun getExchanges(): Flow<List<ExchangeResponse>>  {
-        return flow { emit(apiService.getExchanges()) }
+    fun getExchanges(): Flow<List<ExchangeResponse>> {
+        return flow {
+            emit(connectivityChecker.executeNetworkRequest { apiService.getExchanges() })
+        }
             .catch { throw it }
             .flowOn(ioDispatcher)
     }
