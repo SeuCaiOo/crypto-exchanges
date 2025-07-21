@@ -76,6 +76,41 @@ Aqui estão algumas capturas de tela do aplicativo em funcionamento:
 | :---------------------------: | :--------------------------: | :---------------------------: |
 | ![Lista](https://github.com/user-attachments/assets/844e6983-6075-40c6-994f-90f4785b1694) | ![Detalhes](https://github.com/user-attachments/assets/b035a41f-240d-4fcb-9852-7f39016b56e0) | ![Erro](https://github.com/user-attachments/assets/e3871da2-fb8d-4356-90ab-d99b1e29ee66) |
 
+<details>
+<summary><h2>Roadmap</h2></summary>
+
+Este roadmap descreve as funcionalidades e melhorias planejadas para o projeto, com base nas ideias e tarefas futuras.
+
+### Qualidade de Código e Robustez
+
+-   [x] **Monitoramento de Conectividade:** Criar uma classe ou utilitário para verificar o estado da conexão com a internet. A UI deve reagir a mudanças, informando ao usuário quando estiver offline.
+
+-   [ ] **Cobertura de Testes com JaCoCo:**
+    - Integrar o plugin do JaCoCo ao projeto para gerar relatórios de cobertura de testes, garantindo a qualidade e a testabilidade do código.
+
+-   [ ] **Análise Estática com Detekt:**
+    - Adicionar o Detekt para realizar análise estática de código Kotlin, identificando e prevenindo *code smells* e mantendo um alto padrão de código.
+
+-   [x] **Tratamento Avançado de Erros:**
+    - Implementar um tratamento de erros mais detalhado nas telas. Em vez de uma mensagem genérica, mostrar erros específicos (ex: "Servidor indisponível", "Nenhum resultado encontrado", "Você está offline") com possíveis ações para o usuário.
+
+### Performance e Funcionalidades
+
+-   [ ] **Paginação na Lista:**
+    - Implementar paginação na lista de exchanges usando a biblioteca Paging 3 do Jetpack. Isso evitará o carregamento de todos os itens de uma vez, melhorando a performance e o uso de memória.
+
+-   [x] **Cache de Dados com Room:**
+    - Integrar o Room para criar um banco de dados local. Implementar uma estratégia de cache (ex: *cache-first* ou *network-first*) para que os dados da API sejam salvos localmente, permitindo o uso offline do app e reduzindo o número de chamadas à rede.
+
+### Automação e DevOps
+
+-   [ ] **CI/CD com GitHub Actions:**
+    - Criar workflows (`.github/workflows`) para automação:
+        - **CI (Continuous Integration):** Um script que roda a cada push/pull request para compilar o projeto, rodar o Detekt e executar os testes unitários.
+        - **CD (Continuous Deployment):** Um script para automatizar a geração de builds de release e, opcionalmente, publicá-las na Google Play Store.
+
+</details>
+
 ## Configuração da API Key
 
 Este projeto requer uma chave de API para acessar os dados das exchanges. Siga os passos abaixo para configurá-la:
