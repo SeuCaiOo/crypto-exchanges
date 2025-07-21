@@ -22,8 +22,8 @@ import br.com.seucaio.cryptoexchanges.ui.CryptoExchangeSurface
 @Composable
 fun MyError(
     modifier: Modifier = Modifier,
-    title: String = "Oops! Something went wrong.",
-    errorMessage: String = "We couldn\'t load the broker details. Please try again.",
+    title: String = "Oops! Algo deu errado.",
+    errorMessage: String = "Por favor, tente novamente.",
     onRetry: () -> Unit
 ) {
     Column(
@@ -49,7 +49,7 @@ fun MyError(
             onClick = onRetry,
             modifier = Modifier.widthIn(min = 120.dp)
         ) {
-            Text(text = "Retry")
+            Text(text = "Tentar novamente")
         }
     }
 }
@@ -71,8 +71,8 @@ private fun MyErrorPreview() {
 private fun MyErrorCustomMessagePreview() {
     CryptoExchangeSurface {
         MyError(
-            title = "Connection Failed",
-            errorMessage = "Unable to connect to the server. Please check your internet connection and try again.",
+            title = "Conexão falhou",
+            errorMessage = "Por favor, verifique sua conexão com a internet e tente novamente.",
             onRetry = {}
         )
     }
