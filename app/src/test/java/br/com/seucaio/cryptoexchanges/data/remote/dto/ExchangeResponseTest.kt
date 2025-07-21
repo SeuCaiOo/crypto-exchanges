@@ -50,9 +50,9 @@ class ExchangeResponseTest {
         val exchange = ExchangeMapper.mapRemoteToDomain(exchangeResponse)
 
         // Then
-        assertEquals("", exchange.exchangeId)
-        assertEquals("", exchange.name)
-        assertEquals("", exchange.website)
+        assertEquals("", exchange.exchangeId.orEmpty())
+        assertEquals("", exchange.name.orEmpty())
+        assertEquals("", exchange.website.orEmpty())
         assertEquals(0.0, exchange.volume1HrsUsd.orZero(), 0.0)
         assertEquals(0.0, exchange.volume1DayUsd.orZero(), 0.0)
         assertEquals(0.0, exchange.volume1MthUsd.orZero(), 0.0)
