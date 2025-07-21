@@ -11,7 +11,6 @@ sealed class NetworkException : Exception() {
 
     data class ApiException(
         override val message: String? = "Erro ao processar os dados recebidos da API.",
-        val code: Int
     ) : NetworkException()
 
     data class ConnectionException(

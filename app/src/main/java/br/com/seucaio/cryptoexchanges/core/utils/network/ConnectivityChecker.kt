@@ -50,7 +50,7 @@ suspend fun <T> ConnectivityChecker.executeNetworkRequest(action: suspend () -> 
                         in 500..599 -> "Erro no servidor - Tente novamente mais tarde"
                         else -> "Erro na API: ${e.message}"
                     }
-                    throw NetworkException.ApiException(code = httpCode, message = customMessage)
+                    throw NetworkException.ApiException(message = "$customMessage (HTTP $httpCode)")
                 }
 
                 else -> throw NetworkException.UnknownException(e.message)
