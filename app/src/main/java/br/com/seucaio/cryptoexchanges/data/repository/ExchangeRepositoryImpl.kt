@@ -16,63 +16,52 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlin.collections.map
 
 class ExchangeRepositoryImpl(
     private val localDataSource: ExchangeLocalDataSource,
     private val remoteDataSource: ExchangeRemoteDataSource,
     private val mapper: ExchangeMapper = ExchangeMapper
 ) : ExchangeRepository {
-    override fun getExchanges(forceRefresh: Boolean): Flow<List<Exchange>> {
+    override fun getExchanges(): Flow<List<Exchange>> {
         return getExchangesFromCache()
-            .onStart {
-                if (forceRefresh) {
-                    fetchAndCacheExchangesFromApi(exchangesFromApi())
-                } else {
-                    refreshExchangesIfNeeded()
-                }
-            }
-            .catch { e ->
-                exchangesFromDb().first().ifEmpty { throw e }
-                handleErrorRefresh(e)
-            }
+            .onStart { refreshExchangesIfNeeded() }
             .flowOn(Dispatchers.IO)
     }
 
-    private fun handleErrorRefresh(e: Throwable) {
-        val message = "Falha na atualização dos dados\n${e.message}"
-        when (e) {
-            is NetworkException.NoInternetException -> throw DataUpdateFailedWarning.NetworkError(message)
-            is NetworkException.ApiException -> throw DataUpdateFailedWarning.ApiError(message)
-            else -> throw DataUpdateFailedWarning.UnknownError(message)
-        }
+    override fun refreshExchanges(): Flow<List<Exchange>> {
+        return getExchangesFromCache()
+            .onStart { fetchAndCacheExchangesFromApi() }
+            .catch { e -> throw DataUpdateFailedWarning.fromThrowable(e) }
+            .flowOn(Dispatchers.IO)
     }
 
     private fun getExchangesFromCache(): Flow<List<Exchange>> {
-        return exchangesFromDb().map { it.map(mapper::mapLocalToDomain) }
+        return localDataSource.getAllExchanges().map { list ->
+            list.map(mapper::mapLocalToDomain)
+        }
     }
 
-    private fun exchangesFromDb(): Flow<List<ExchangeEntity>> {
-        return  localDataSource.getAllExchanges()
+    private fun getExchangesFromApi(): Flow<List<Exchange>> {
+        return remoteDataSource.getExchanges().map { list ->
+            list.map(mapper::mapRemoteToDomain)
+        }
     }
 
     private suspend fun refreshExchangesIfNeeded() {
         val oldestTimestamp = localDataSource.getOldestUpdateTimestamp()
-        if (oldestTimestamp == null) {
-            fetchAndCacheExchangesFromApi(exchangesFromApi())
-        }
+        if (oldestTimestamp == null) fetchAndCacheExchangesFromApi()
     }
 
-    private suspend fun exchangesFromApi(): List<ExchangeResponse> = try {
-        remoteDataSource.getExchanges().first()
-    } catch (e: Exception) {
-        throw e
-    }
-
-    private suspend fun fetchAndCacheExchangesFromApi(remoteResponse: List<ExchangeResponse>) {
+    private suspend fun fetchAndCacheExchangesFromApi() {
         try {
-            val domainModels = remoteResponse.map(mapper::mapRemoteToDomain)
-            val entities = domainModels.map(mapper::mapDomainToEntity)
-            if (entities.isNotEmpty()) localDataSource.clearAndCacheExchanges(exchanges = entities)
+            getExchangesFromApi().first().let { exchangesFromApi ->
+                if (exchangesFromApi.isNotEmpty()) {
+                    localDataSource.clearAndCacheExchanges(
+                        exchanges = exchangesFromApi.map(mapper::mapDomainToEntity)
+                    )
+                }
+            }
         } catch (e: Exception) {
             throw e
         }

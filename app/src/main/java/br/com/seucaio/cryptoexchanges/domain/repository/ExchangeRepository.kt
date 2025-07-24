@@ -4,5 +4,6 @@ import br.com.seucaio.cryptoexchanges.domain.model.Exchange
 import kotlinx.coroutines.flow.Flow
 
 interface ExchangeRepository {
-    fun getExchanges(forceRefresh: Boolean): Flow<List<Exchange>>
+    fun getExchanges(): Flow<List<Exchange>>
+    fun refreshExchanges(): Flow<List<Exchange>>
 }

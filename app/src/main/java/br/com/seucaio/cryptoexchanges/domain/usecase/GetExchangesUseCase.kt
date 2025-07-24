@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 class GetExchangesUseCase(private val repository: ExchangeRepository) {
     operator fun invoke(forceRefresh: Boolean = false): Flow<List<Exchange>> {
-        return repository.getExchanges(forceRefresh)
+        return if (forceRefresh) {
+            repository.refreshExchanges()
+        } else {
+            repository.getExchanges()
+        }
     }
 }
