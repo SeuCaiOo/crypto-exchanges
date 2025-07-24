@@ -32,7 +32,7 @@ sealed class NetworkException(
     class ApiException(
         val httpStatusCode: Int? = null,
         cause: Throwable? = null
-    ) : NetworkException(message = httpStatusCode?.formatApiMessage(), cause = cause)
+    ) : NetworkException(message = httpStatusCode.formatApiMessage(), cause = cause)
 
 
     class UnknownException(
