@@ -5,57 +5,74 @@ import br.com.seucaio.cryptoexchanges.domain.repository.ExchangeRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class GetExchangesUseCaseTest {
-
     private val repository: ExchangeRepository = mockk()
     private val getExchangesUseCase = GetExchangesUseCase(repository)
 
     @Test
-    fun `invoke should call getExchanges from repository and return data`() = runTest {
+    fun `should call getExchanges from repository when forceRefresh is false`() = runTest {
         // Given
-        val expectedExchanges = listOf(
-            Exchange(exchangeId = "id1", name = "name1", website = "website1", icons = listOf(Exchange.Icon(url = "url1")), dataStart = "2000"),
-            Exchange(exchangeId = "id2", name = "name2", website = "website2", icons = listOf(Exchange.Icon(url = "url2")), dataStart = "2001")
-        )
-        coEvery { repository.getExchanges(any()) } returns flowOf(expectedExchanges)
+        val expectedExchanges = listOf(mockk<Exchange>(), mockk<Exchange>())
+        coEvery { repository.getExchanges() } returns flowOf(expectedExchanges)
 
         // When
-        val result = getExchangesUseCase.invoke(false).toList()
+        val result = getExchangesUseCase.invoke(false).first()
 
         // Then
-        coVerify(exactly = 1) { repository.getExchanges(false) }
-        assertEquals(expectedExchanges, result[0])
+        assertEquals(expectedExchanges, result)
+        coVerify(exactly = 1) { repository.getExchanges() }
+        coVerify(exactly = 0) { repository.refreshExchanges() }
     }
 
     @Test
-    fun `invoke should pass forceRefresh parameter to repository`() = runTest {
+    fun `should call refreshExchanges from repository when forceRefresh is true`() = runTest {
         // Given
-        val expectedExchanges = listOf(
-            Exchange(exchangeId = "id1", name = "name1", website = "website1", icons = listOf(Exchange.Icon(url = "url1")), dataStart = "2000")
-        )
-        coEvery { repository.getExchanges(true) } returns flowOf(expectedExchanges)
+        val expectedExchanges = listOf(mockk<Exchange>())
+        coEvery { repository.refreshExchanges() } returns flowOf(expectedExchanges)
 
         // When
-        getExchangesUseCase.invoke(true).toList()
+        getExchangesUseCase.invoke(true).first()
 
         // Then
-        coVerify(exactly = 1) { repository.getExchanges(true) }
+        coVerify(exactly = 1) { repository.refreshExchanges() }
+        coVerify(exactly = 0) { repository.getExchanges() }
     }
 
-    @Test(expected = Exception::class)
-    fun `invoke should propagate exceptions from repository`() = runTest {
+    @Test
+    fun `should propagate exceptions from getExchanges when forceRefresh is false`() = runTest {
         // Given
-        coEvery { repository.getExchanges(any()) } throws Exception("Network error")
+        val expectedMessage = "Network error"
+        coEvery { repository.getExchanges() } throws Exception(expectedMessage)
 
         // When
-        getExchangesUseCase.invoke(false).toList()
+        val exception = assertFailsWith<Exception> {
+            getExchangesUseCase.invoke(false).first()
+        }
 
-        // Then: Exception is expected to be thrown and caught by the test runner
+        // Then
+        assertEquals(expectedMessage, exception.message)
+
+    }
+
+    @Test
+    fun `should propagate exceptions from refreshExchanges when forceRefresh is true`() = runTest {
+        // Given
+        val expectedMessage = "Network error"
+        coEvery { repository.refreshExchanges() } throws Exception(expectedMessage)
+
+        // When
+        val exception = assertFailsWith<Exception> {
+            getExchangesUseCase.invoke(true).first()
+        }
+
+        // Then
+        assertEquals(expectedMessage, exception.message)
     }
 }
