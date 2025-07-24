@@ -1,27 +1,68 @@
 package br.com.seucaio.cryptoexchanges.core.utils.network
 
-sealed class NetworkException : Exception() {
-    data class ParseException(
-        override val message: String = "Erro ao ler a resposta da API."
-    ) : NetworkException()
+import kotlinx.serialization.SerializationException
+import retrofit2.HttpException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 
-    data class NetworkTimeout(
-        override val message: String = "Tempo limite excedido - Verifique sua conexão."
-    ) : NetworkException()
+sealed class NetworkException(
+    override val message: String?,
+    override val cause: Throwable? = null
+) : Exception(message, cause) {
+    class ParseException(
+        message: String = "Erro ao processar os dados recebidos.",
+        cause: Throwable? = null
+    ) : NetworkException(message, cause)
 
-    data class ConnectionException(
-        override val message: String = "Erro de conexão. Verifique sua internet e tente novamente."
-    ) : NetworkException()
+    class NetworkTimeout(
+        message: String = "A requisição demorou muito para responder, verifique sua internet.",
+        cause: Throwable? = null
+    ) : NetworkException(message, cause)
 
-    data class NoInternetException(
-        override val message: String = "Sem conexão com a internet. Verifique sua rede e tente novamente."
-    ) : NetworkException()
+    class ConnectionException(
+        message: String = "Não foi possível conectar ao servidor, verifique sua internet.",
+        cause: Throwable? = null
+    ) : NetworkException(message, cause)
 
-    data class ApiException(
-        override val message: String? = null,
-    ) : NetworkException()
+    class NoInternetException(
+        message: String = " Sem conexão com a internet, verifique sua rede.",
+        cause: Throwable? = null
+    ) : NetworkException(message, cause)
 
-    data class UnknownException(
-        override val message: String? = null
-    ) : NetworkException()
+    class ApiException(
+        val httpStatusCode: Int? = null,
+        cause: Throwable? = null
+    ) : NetworkException(message = httpStatusCode?.formatApiMessage(), cause = cause)
+
+
+    class UnknownException(
+        message: String? = null,
+        cause: Throwable? = null
+    ) : NetworkException(message = message ?: "Ocorreu um erro desconhecido.", cause = cause)
+
+    companion object {
+        private fun Int?.formatApiMessage(): String {
+            if (this == null) return "Erro na comunicação com a API."
+
+            val message = when (this) {
+                401 -> "Não autorizado, verifique sua API key"
+                403 -> "Acesso negado"
+                404 -> "Endpoint não encontrado"
+                429 -> "Muitas requisições, tente novamente mais tarde"
+                in 500..599 -> "Erro no servidor, tente novamente mais tarde"
+                else -> "Erro ao processar os dados recebidos da API"
+            }
+            return "$message (HTTP $this)."
+        }
+
+        fun fromThrowable(e: Throwable): NetworkException {
+            return when (e) {
+                is SerializationException -> ParseException(cause = e)
+                is SocketTimeoutException -> NetworkTimeout(cause = e)
+                is ConnectException -> ConnectionException(cause = e)
+                is HttpException -> ApiException(httpStatusCode = e.code(), cause = e)
+                else -> UnknownException(message = e.message, cause = e)
+            }
+        }
+    }
 }

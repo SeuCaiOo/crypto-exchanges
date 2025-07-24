@@ -1,7 +1,22 @@
 package br.com.seucaio.cryptoexchanges.data.error
 
-sealed class DataUpdateFailedWarning : Throwable() {
-    data class NetworkError(override val message: String?) : DataUpdateFailedWarning()
-    data class ApiError(override val message: String?) : DataUpdateFailedWarning()
-    data class UnknownError(override val message: String?) : DataUpdateFailedWarning()
+import br.com.seucaio.cryptoexchanges.core.utils.network.NetworkException
+
+sealed class DataUpdateFailedWarning(
+    override val message: String? = null
+) : Exception(message) {
+    class NetworkError(message: String) : DataUpdateFailedWarning(message)
+    class ApiError(message: String) : DataUpdateFailedWarning(message)
+    class UnknownError(message: String) : DataUpdateFailedWarning(message)
+
+    companion object {
+        fun fromThrowable(e: Throwable): DataUpdateFailedWarning {
+            val message = "Falha na atualização dos dados.\n${e.message}"
+            return when (e) {
+                is NetworkException.NoInternetException -> NetworkError(message)
+                is NetworkException.ApiException -> ApiError(message)
+                else -> UnknownError(message)
+            }
+        }
+    }
 }
