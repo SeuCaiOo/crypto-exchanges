@@ -19,8 +19,6 @@ class ExchangeRemoteDataSource(
     fun getExchanges(): Flow<List<ExchangeResponse>> {
         return flow {
             emit(connectivityChecker.executeNetworkRequest { apiService.getExchanges() })
-        }
-            .catch { throw it }
-            .flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
     }
 }
